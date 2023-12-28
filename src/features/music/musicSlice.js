@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const url = "http://localhost:3000/musics";
+const url = "https://musics-hz00.onrender.com/musics";
 
 const initialState = {
   dark: true,
