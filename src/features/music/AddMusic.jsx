@@ -26,16 +26,29 @@ export default function AddMusic() {
     }));
   };
 
+  const isFormValid = () => {
+    return (
+      formData.title.trim() !== "" &&
+      formData.artist.trim() !== "" &&
+      formData.genre.trim() !== "" &&
+      /^(0\d|[1-9]):[0-5]\d$/.test(formData.duration) // Check for the format "NN:NN"
+    );
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(createMusic(formData));
-    navigate("/musics");
-    setFormData({
-      title: "",
-      artist: "",
-      genre: "",
-      duration: "",
-    });
+    if (isFormValid()) {
+      dispatch(createMusic(formData));
+      navigate("/musics");
+      setFormData({
+        title: "",
+        artist: "",
+        genre: "",
+        duration: "",
+      });
+    } else {
+      console.log("Invalid form data");
+    }
   };
 
   const boxStyle = css`
@@ -61,9 +74,14 @@ export default function AddMusic() {
     color: ${darkMode ? "#333" : "#eee"};
     margin-top: 1rem;
     &:hover {
-      cursor: pointer;
+      cursor: ${isFormValid() ? "pointer" : "not-allowed"};
       color: ${darkMode ? "#222" : "#fff"};
       background-color: ${darkMode ? "#fff" : "#222"};
+    }
+    &:disabled {
+      background-color: #ccc;
+      color: #666;
+      cursor: not-allowed;
     }
   `;
 
@@ -120,13 +138,15 @@ export default function AddMusic() {
           type="text"
           id="duration"
           name="duration"
-          placeholder="Enter Music Duration"
+          placeholder="Enter Music Duration(03:34)"
           value={formData.duration}
           onChange={onInputChange}
         />
       </Box>
       <Box css={boxStyle}>
-        <Button css={buttonStyle}>Add Music</Button>
+        <Button css={buttonStyle} disabled={!isFormValid()}>
+          Add Music
+        </Button>
       </Box>
     </form>
   );
