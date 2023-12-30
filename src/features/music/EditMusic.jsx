@@ -47,6 +47,15 @@ export default function EditMusic() {
     }));
   };
 
+  const isFormValid = () => {
+    return (
+      formData.title.trim() !== "" &&
+      formData.artist.trim() !== "" &&
+      formData.genre.trim() !== "" &&
+      /^(0\d|[1-9]):[0-5]\d$/.test(formData.duration) // Check for the format "NN:NN"
+    );
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(updateMusic({ id, ...formData }));
@@ -78,14 +87,18 @@ export default function EditMusic() {
     }
   `;
   const buttonStyle = css`
-    text-decoration: underline;
-    margin-top: 1rem;
-    color: ${darkMode ? "#333" : "#eee"};
     background-color: ${darkMode ? "#eee" : "#333"};
+    color: ${darkMode ? "#333" : "#eee"};
+    margin-top: 1rem;
     &:hover {
-      color: #eee;
-      cursor: pointer;
-      background-color: green;
+      cursor: ${isFormValid() ? "pointer" : "not-allowed"};
+      color: ${darkMode ? "#222" : "#fff"};
+      background-color: ${darkMode ? "#fff" : "#222"};
+    }
+    &:disabled {
+      background-color: #ccc;
+      color: #666;
+      cursor: not-allowed;
     }
   `;
 
@@ -148,7 +161,9 @@ export default function EditMusic() {
         />
       </Box>
       <Box css={boxStyle}>
-        <Button css={buttonStyle}>Edit Music</Button>
+        <Button css={buttonStyle} disabled={!isFormValid()}>
+          Edit Music
+        </Button>
       </Box>
     </form>
   );
